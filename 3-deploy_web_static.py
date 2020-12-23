@@ -6,10 +6,22 @@
 """
 
 from fabric.api import run, put, env
+from datetime import datetime
 from os.path import exists
 
 env.user = 'ubuntu'
 env.hosts = ['34.73.186.220', '35.237.108.29']
+
+
+def do_pack():
+    """Function to compress files"""
+    local("mkdir -p versions")
+    str_date = datetime.now().strftime('%Y%m%d%H%M%S')
+    result = local("tar -czvf versions/web_static_" +
+                   str_date + ".tgz web_static")
+    if result.failed:
+        return None
+    return "versions/web_static_" + str_date + ".tgz"
 
 
 def do_deploy(archive_path):
@@ -39,3 +51,11 @@ def do_deploy(archive_path):
 
     except Exception:
         return False
+
+
+def deploy():
+    """compress and deploy a tar file to a web server"""
+    return_pack = do_pack()
+    if return_pack is None:
+        return False
+    return do_deploy(return_pack)
