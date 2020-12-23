@@ -10,13 +10,10 @@ from datetime import datetime
 
 
 def do_pack():
-    """function that pack archives"""
-    local('mkdir -p versions')
-    date = datetime.now()
-    tgz_file: local('tar -cvzf versions/web_static_{}{}{}{}{}{}.tgz web_static'
-                    .format(date.year, date.month, date.day,
-                            date.hour, date.minute, date.second), capture=True)
-
-    if tgz_file.succeeded:
-        return tgz_file
-    return None
+    """Function to compress files"""
+    local("mkdir -p versions")
+    file_1 = local("tar -czvf versions/web_static_{}.tgz web_static"
+                   .format(datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")))
+    if file_1.failed:
+        return None
+    return file_1
