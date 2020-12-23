@@ -5,7 +5,7 @@
  your AirBnB Clone repo, using the function do_pack.
 """
 
-from fabric.api import run, put, env
+from fabric.api import *
 from os.path import exists
 
 env.user = 'ubuntu'
