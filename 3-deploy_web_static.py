@@ -5,7 +5,7 @@
  your AirBnB Clone repo, using the function do_pack.
 """
 
-from fabric.api import run, put, env
+from fabric.api import run, put, env, local
 from datetime import datetime
 from os.path import exists
 
