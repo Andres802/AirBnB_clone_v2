@@ -5,6 +5,9 @@
 
 from fabric.api import local
 from datetime import datetime
+from os.path import exists
+
+env.hosts = ['34.73.186.220', '35.237.108.29']
 
 def do_pack():
     """function that pack archives"""
