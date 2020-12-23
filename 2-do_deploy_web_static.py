@@ -13,26 +13,29 @@ env.hosts = ['34.73.186.220', '35.237.108.29']
 
 
 def do_deploy(archive_path):
-    """create function of deploy"""
-    if os.path.exists(archive_path) is False:
+    """
+        Distributes an archive to your web servers
+    """
+    if not exists(archive_path):
         return False
+
+    _path = archive_path.split("/")
+    path_no_ext = _path[1].split(".")[0]
+
     try:
-        pathfix = archive_path.split("/")[-1]
-        whithouttgz = pathfix.split(".")[0]
-        path = "/data/web_static/releases"
-        put("{}".format(archive_path), "/tmp/{}".format(pathfix))
-        run("sudo mkdir -p {}/{}/" .format(path, whithouttgz))
-        run("sudo tar -xzf /tmp/{} -C {}/{}/" .format(pathfix,
-                                                      path, whithouttgz))
-        run("sudo rm /tmp/{}".format(pathfix))
-        run("sudo mv {}/{}/web_static/* {}/{}/".format(path,
-                                                       whithouttgz,
-                                                       path, whithouttgz))
-        run("sudo rm -rf {}/{}/web_static" .format(path, whithouttgz))
+        put(archive_path, "/tmp")
+        run("sudo mkdir -p /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo tar -xzf /tmp/" + path_no_ext + ".tgz" +
+            " -C /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm /tmp/" + path_no_ext + ".tgz")
+        run("sudo mv /data/web_static/releases/" + path_no_ext +
+            "/web_static/* /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm -rf /data/web_static/releases/" +
+            path_no_ext + "/web_static")
         run("sudo rm -rf /data/web_static/current")
-        run("sudo ln -sf {}/{}/ /data/web_static/current" .format(path,
-                                                                  whithouttgz))
-        print("New version deployed!")
+        run("sudo ln -s /data/web_static/releases/" + path_no_ext +
+            "/ /data/web_static/current")
         return True
+
     except Exception:
         return False
