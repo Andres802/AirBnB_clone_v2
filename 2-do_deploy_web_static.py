@@ -8,36 +8,34 @@
 from fabric.api import *
 from os.path import exists
 
-
+env.user = 'ubuntu'
 env.hosts = ['34.73.186.220', '35.237.108.29']
 
 
 def do_deploy(archive_path):
-    """Distributes an archive to your web servers
     """
-
+        Distributes an archive to your web servers
+    """
     if not exists(archive_path):
         return False
 
+    _path = archive_path.split("/")
+    path_no_ext = _path[1].split(".")[0]
+
     try:
-        file_nametgz = archive_path.split("/")[-1]
-        file_name = file_nametgz.split(".")[0]
-        put(archive_path, "/tmp/{}".format(file_nametgz))
-        run("mkdir -p /data/web_static/releases/{}/".format(file_name))
-        run("tar -xzf /tmp/{} -C\
-            /data/web_static/releases/{}/".format(file_nametgz, file_name))
-
-        run("rm /tmp/{}".format(file_nametgz))
-        run("mv /data/web_static/releases/{}/web_static/*\
-            /data/web_static/releases/{}/".format(file_name, file_name))
-        run("rm -rf /data/web_static/releases/{}/web_static".format(file_name))
-
-        # Deletes the symbolic link?
-        run("rm -rf /data/web_static/current")
-
-        # Creates the symbolic link again
-        run("ln -s /data/web_static/releases/{}/\
-            /data/web_static/current".format(file_name))
+        put(archive_path, "/tmp")
+        run("sudo mkdir -p /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo tar -xzf /tmp/" + path_no_ext + ".tgz" +
+            " -C /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm /tmp/" + path_no_ext + ".tgz")
+        run("sudo mv /data/web_static/releases/" + path_no_ext +
+            "/web_static/* /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm -rf /data/web_static/releases/" +
+            path_no_ext + "/web_static")
+        run("sudo rm -rf /data/web_static/current")
+        run("sudo ln -s /data/web_static/releases/" + path_no_ext +
+            "/ /data/web_static/current")
         return True
+
     except Exception:
         return False
