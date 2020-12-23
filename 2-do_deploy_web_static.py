@@ -12,34 +12,30 @@ from os.path import exists
 env.hosts = ['34.73.186.220', '35.237.108.29']
 
 
-def do_pack():
-    """Function to compress files"""
-    local("mkdir -p versions")
-    file_1 = local("tar -czvf versions/web_static_{}.tgz web_static"
-                   .format(datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")))
-    if file_1.failed:
-        return None
-    return file_1
-
-
 def do_deploy(archive_path):
-    """[summary]"""
-    if exists(archive_path):
-        file_path = archive_path.split("/")[1]
-        serv_path = "/data/web_static/releases/{}".format(
-            file_path.replace(".tgz", ""))
-        put('{}'.format(archive_path), '/tmp/')
-        run('mkdir -p {}'.format(serv_path))
-        run('tar -xzf /tmp/{} -C {}/'.format(
-            file_path,
-            serv_path))
-        run('rm /tmp/{}'.format(file_path))
-        run('mv -f {}/web_static/* {}/'.format(serv_path, serv_path))
-        run('rm -rf {}/web_static'.format(
-            serv_path))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {} /data/web_static/current'.format(
-            serv_path))
+    """
+        Distributes an archive to your web servers
+    """
+    if not exists(archive_path):
+        return False
+
+    _path = archive_path.split("/")
+    path_no_ext = _path[1].split(".")[0]
+
+    try:
+        put(archive_path, "/tmp")
+        run("sudo mkdir -p /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo tar -xzf /tmp/" + path_no_ext + ".tgz" +
+            " -C /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm /tmp/" + path_no_ext + ".tgz")
+        run("sudo mv /data/web_static/releases/" + path_no_ext +
+            "/web_static/* /data/web_static/releases/" + path_no_ext + "/")
+        run("sudo rm -rf /data/web_static/releases/" +
+            path_no_ext + "/web_static")
+        run("sudo rm -rf /data/web_static/current")
+        run("sudo ln -s /data/web_static/releases/" + path_no_ext +
+            "/ /data/web_static/current")
         return True
-    else:
+
+    except Exception:
         return False
