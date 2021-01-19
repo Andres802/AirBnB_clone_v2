@@ -4,6 +4,7 @@ that starts a Flask web application
 """
 
 from flask import Flask
+from flask import request
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
