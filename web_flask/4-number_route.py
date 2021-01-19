@@ -38,7 +38,7 @@ def python(text='is cool'):
 @app.route('/number/<int:n>')
 def isInt(n):
     """return int if n is a number , casted with int"""
-    return "{} is anumber".format(n)
+    return "{} is a number".format(n)
 
 
 if __name__ == "__main__":
