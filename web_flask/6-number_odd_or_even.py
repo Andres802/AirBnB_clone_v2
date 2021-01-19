@@ -43,11 +43,13 @@ def isInt(n):
 
 @app.route('/number_template/<int:n>')
 def number_template(n):
+    """retrurn if it is an int """
     return render_template('5-number.html', number=n)
 
 
 @app.route('/number_odd_or_even/<int:n>')
 def render_template2(n):
+    """Return if number is odd or even  """
     return render_template('6-number_odd_or_even.html', number=n)
 
 
