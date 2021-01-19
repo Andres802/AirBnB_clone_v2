@@ -5,7 +5,7 @@ import models
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from models.city import City
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 
 class State(BaseModel, Base):

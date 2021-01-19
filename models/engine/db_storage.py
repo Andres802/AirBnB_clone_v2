@@ -41,7 +41,7 @@ class DBStorage:
                 objs = self.__session.query(eval(clselement)).all()
                 cls_query.extend(objs)
         else:
-            objs = self.__session.query(eval(cls)).all()
+            objs = self.__session.query(cls).all()
             cls_query.extend(objs)
         for obj in cls_query:
             key = "{}.{}".format(type(obj).__name__, obj.id)
