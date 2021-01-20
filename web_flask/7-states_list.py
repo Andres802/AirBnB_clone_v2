@@ -12,15 +12,15 @@ app.url_map.strict_slashes = False
 
 @app.teardown_appcontext
 def closetorage(self):
-    """ Close storage session """
+    """Close storage session"""
     storage.close()
 
 
-@app.route('/cities_by_states')
-def show_states():
-    """ Show states """
+@app.route('/states_list')
+def trace_route():
+    """ Display states in HTML"""
     states = storage.all(State).values()
-    return render_template('8-cities_by_states.html', states=states)
+    return render_template('7-states_list.html', states=states)
 
 
 if __name__ == "__main__":
